@@ -1,35 +1,40 @@
 <?php
 // controllers/AuthController.php
+require_once 'config/database.php';
+require_once 'models/Usuario.php';
 
 class AuthController {
     
-    // Mostra a tela de login
     public function telaLogin() {
         require_once 'views/login.php';
     }
 
-    // Valida os dados digitados
     public function logar() {
-        $usuario = $_POST['usuario'];
-        $senha = $_POST['senha'];
+        $database = new Database();
+        $db = $database->getConnection();
+        $usuarioModel = new Usuario($db);
 
-        // Usuário padrão provisório para o protótipo
-        if ($usuario === 'admin' && $senha === '1234') {
-            // Cria a sessão dizendo que ele está logado
+        $login_digitado = $_POST['usuario'];
+        $senha_digitada = $_POST['senha'];
+
+        // Busca o usuário no banco
+        $user_dados = $usuarioModel->buscarPorLogin($login_digitado);
+
+        // password_verify compara a senha digitada com o hash salvo no banco
+        if ($user_dados && password_verify($senha_digitada, $user_dados['senha'])) {
             $_SESSION['logado'] = true;
-            $_SESSION['usuario_nome'] = 'Administrador';
+            $_SESSION['usuario_id'] = $user_dados['id'];
+            $_SESSION['usuario_nome'] = $user_dados['nome'];
+            $_SESSION['usuario_perfil'] = $user_dados['perfil']; // Importante para o Configurador
             
-            // Redireciona para o painel de escolha de módulos
             header("Location: index.php?rota=dashboard");
             exit();
         } else {
-            // Se errar, volta para a tela de login com mensagem de erro
             $erro = "Usuário ou senha inválidos!";
             require_once 'views/login.php';
         }
     }
 
-    // Destrói a sessão e volta pro login
     public function sair() {
         session_destroy();
         header("Location: index.php");

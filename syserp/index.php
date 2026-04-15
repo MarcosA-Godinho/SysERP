@@ -1,5 +1,10 @@
 <?php
 // index.php
+
+//ini_set('display_errors', 1);
+//ini_set('display_startup_errors', 1);
+//error_reporting(E_ALL);
+
 session_start();
 
 // Pega a rota da URL. Se não tiver nenhuma, o padrão é ir pro dashboard
@@ -37,6 +42,23 @@ switch ($rota) {
         // Toda a lógica antiga do RH veio para cá!
         require_once 'controllers/FuncionarioController.php';
         $controller = new FuncionarioController();
+
+        if ($_SERVER["REQUEST_METHOD"] == "POST") {
+            if (isset($_POST['id']) && !empty($_POST['id'])) {
+                $controller->atualizar();
+            } else {
+                $controller->salvar();
+            }
+        } else if (isset($_GET['acao']) && $_GET['acao'] == 'editar' && isset($_GET['id'])) {
+            $controller->editar($_GET['id']);
+        } else {
+            $controller->listar();
+        }
+        break;
+
+    case 'configurador':
+        require_once 'controllers/ConfiguradorController.php';
+        $controller = new ConfiguradorController();
         
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
             if(isset($_POST['id']) && !empty($_POST['id'])) {
@@ -47,10 +69,12 @@ switch ($rota) {
         } 
         else if (isset($_GET['acao']) && $_GET['acao'] == 'editar' && isset($_GET['id'])) {
             $controller->editar($_GET['id']);
-        } 
+        }
+        else if (isset($_GET['acao']) && $_GET['acao'] == 'excluir' && isset($_GET['id'])) {
+            $controller->excluir($_GET['id']);
+        }
         else {
             $controller->listar();
         }
         break;
 }
-?>
