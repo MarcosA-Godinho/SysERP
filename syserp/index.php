@@ -77,4 +77,22 @@ switch ($rota) {
             $controller->listar();
         }
         break;
+
+    case 'financeiro':
+        require_once 'controllers/FinanceiroController.php';
+        $controller = new FinanceiroController();
+        
+        if ($_SERVER["REQUEST_METHOD"] == "POST") {
+            $controller->salvar();
+        } 
+        else if (isset($_GET['acao']) && $_GET['acao'] == 'baixar' && isset($_GET['id']) && isset($_GET['tipo'])) {
+            $controller->baixar($_GET['id'], $_GET['tipo']);
+        }
+        else if (isset($_GET['acao']) && $_GET['acao'] == 'excluir' && isset($_GET['id'])) {
+            $controller->excluir($_GET['id']);
+        }
+        else {
+            $controller->listar();
+        }
+        break;
 }

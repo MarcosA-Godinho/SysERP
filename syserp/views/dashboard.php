@@ -101,10 +101,10 @@
             <p>Gestão de Funcionários, Cadastros e Opções</p>
         </a>
 
-        <div class="card disabled">
+        <a href="index.php?rota=financeiro" class="card">
             <h3>Módulo Financeiro</h3>
-            <p>Contas a Pagar e Receber (Em Breve)</p>
-        </div>
+            <p>Gestão de Contas a Pagar e Receber</p>
+        </a>
 
         <<?php if ($_SESSION['usuario_perfil'] === 'admin'): ?>
             <a href="index.php?rota=configurador" class="card card-admin">
