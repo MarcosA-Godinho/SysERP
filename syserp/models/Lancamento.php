@@ -9,6 +9,7 @@ class Lancamento {
     public $descricao;
     public $observacao; // Nosso novo campo!
     public $valor;
+    public $data_emissao;
     public $data_vencimento;
     public $data_pagamento;
     public $tipo;
@@ -36,10 +37,11 @@ class Lancamento {
     }
 
     // CRIAR: Grava um novo lançamento no banco
+    // CRIAR: Grava um novo lançamento no banco
     public function criar() {
         $query = "INSERT INTO " . $this->table_name . " 
                   SET descricao=:descricao, observacao=:observacao, valor=:valor, 
-                      data_vencimento=:data_vencimento, tipo=:tipo, status=:status";
+                      data_emissao=:data_emissao, data_vencimento=:data_vencimento, tipo=:tipo, status=:status";
         
         $stmt = $this->conn->prepare($query);
 
@@ -54,6 +56,7 @@ class Lancamento {
         $stmt->bindParam(":descricao", $this->descricao);
         $stmt->bindParam(":observacao", $this->observacao);
         $stmt->bindParam(":valor", $this->valor);
+        $stmt->bindParam(":data_emissao", $this->data_emissao); // NOVO CAMPO
         $stmt->bindParam(":data_vencimento", $this->data_vencimento);
         $stmt->bindParam(":tipo", $this->tipo);
         $stmt->bindParam(":status", $this->status);
@@ -65,7 +68,7 @@ class Lancamento {
     public function atualizar() {
         $query = "UPDATE " . $this->table_name . " 
                   SET descricao=:descricao, observacao=:observacao, valor=:valor, 
-                      data_vencimento=:data_vencimento, tipo=:tipo, status=:status 
+                      data_emissao=:data_emissao, data_vencimento=:data_vencimento, tipo=:tipo, status=:status 
                   WHERE id=:id";
                   
         $stmt = $this->conn->prepare($query);
@@ -73,6 +76,7 @@ class Lancamento {
         $stmt->bindParam(":descricao", $this->descricao);
         $stmt->bindParam(":observacao", $this->observacao);
         $stmt->bindParam(":valor", $this->valor);
+        $stmt->bindParam(":data_emissao", $this->data_emissao); // NOVO CAMPO
         $stmt->bindParam(":data_vencimento", $this->data_vencimento);
         $stmt->bindParam(":tipo", $this->tipo);
         $stmt->bindParam(":status", $this->status);

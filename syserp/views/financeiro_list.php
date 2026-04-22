@@ -9,7 +9,6 @@
         .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
         .btn-voltar { background: #6c757d; color: white; padding: 10px 15px; text-decoration: none; border-radius: 4px; font-weight: bold; }
         
-        /* Dashboard Cards */
         .dashboard { display: flex; gap: 20px; margin-bottom: 30px; }
         .card-dash { flex: 1; padding: 20px; border-radius: 8px; color: white; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
         .card-receber { background: #28a745; }
@@ -22,9 +21,28 @@
         th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
         th { background-color: #343a40; color: white; }
         
-        form { margin-bottom: 20px; display: flex; gap: 10px; flex-wrap: wrap; }
-        input, select { padding: 10px; border: 1px solid #ccc; border-radius: 4px; }
-        button { padding: 10px 20px; background: #343a40; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; }
+        form { margin-bottom: 20px; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+        
+        /* Uniformização das fontes */
+        input, select { 
+            padding: 10px; 
+            border: 1px solid #ccc; 
+            border-radius: 4px; 
+            font-family: inherit; 
+            font-size: 14px; 
+        }
+        
+        button { 
+            padding: 10px 20px; 
+            background: #343a40; 
+            color: white; 
+            border: none; 
+            border-radius: 4px; 
+            cursor: pointer; 
+            font-weight: bold; 
+            font-family: inherit; 
+            font-size: 14px; 
+        }
         
         .btn-baixa { background: #28a745; color: white; padding: 5px 10px; text-decoration: none; border-radius: 4px; font-size: 12px; font-weight: bold; }
         .btn-excluir { color: red; text-decoration: none; font-weight: bold; font-size: 14px; margin-left: 10px; }
@@ -56,13 +74,24 @@
             <h3 style="margin-top: 0;">Novo Lançamento</h3>
             <form action="index.php?rota=financeiro" method="POST">
                 <select name="tipo" required>
-                    <option value="" disabled selected>Tipo de Movimentação...</option>
-                    <option value="Receber">Entrada (A Receber)</option>
-                    <option value="Pagar">Saída (A Pagar)</option>
+                    <option value="" disabled selected>Tipo...</option>
+                    <option value="Receber">Entrada (Receber)</option>
+                    <option value="Pagar">Saída (Pagar)</option>
                 </select>
-                <input type="text" name="descricao" placeholder="Descrição (Ex: Conta de Luz)" required>
+                
+                <input type="text" name="descricao" placeholder="Descrição" required>
                 <input type="number" step="0.01" name="valor" placeholder="Valor (R$)" required>
-                <input type="date" name="data_vencimento" required title="Data de Vencimento">
+                
+                <div style="display: flex; flex-direction: column;">
+                    <label style="font-size: 14px; font-weight: bold; color: #555;">Data Emissão</label>
+                    <input type="date" name="data_emissao" required>
+                </div>
+                
+                <div style="display: flex; flex-direction: column;">
+                    <label style="font-size: 14px; font-weight: bold; color: #555;">Data Vencimento</label>
+                    <input type="date" name="data_vencimento" required>
+                </div>
+                
                 <input type="text" name="observacao" placeholder="Observação (Opcional)">
                 <button type="submit">Lançar</button>
             </form>
@@ -71,6 +100,7 @@
         <h2>Contas e Movimentações</h2>
         <table>
             <tr>
+                <th>Emissão</th>
                 <th>Vencimento</th>
                 <th>Descrição</th>
                 <th>Observação</th>
@@ -81,16 +111,14 @@
             </tr>
             <?php foreach($lancamentos as $lanc): ?>
             <tr>
-                <td><?= date('d/m/Y', strtotime($lanc['data_vencimento'])) ?></td>
+                <td><small><?= date('d/m/Y', strtotime($lanc['data_emissao'])) ?></small></td>
+                <td><strong><?= date('d/m/Y', strtotime($lanc['data_vencimento'])) ?></strong></td>
                 <td><strong><?= $lanc['descricao'] ?></strong></td>
                 <td><small><?= $lanc['observacao'] ?></small></td>
-                
                 <td style="color: <?= $lanc['tipo'] == 'Receber' ? 'green' : 'red' ?>; font-weight: bold;">
                     <?= $lanc['tipo'] ?>
                 </td>
-                
                 <td>R$ <?= number_format($lanc['valor'], 2, ',', '.') ?></td>
-                
                 <td>
                     <?php if($lanc['status'] == 'Pendente'): ?>
                         <span style="color: orange; font-weight: bold;">Pendente</span>
@@ -100,7 +128,6 @@
                         </span>
                     <?php endif; ?>
                 </td>
-                
                 <td>
                     <?php if($lanc['status'] == 'Pendente'): ?>
                         <a href="index.php?rota=financeiro&acao=baixar&id=<?= $lanc['id'] ?>&tipo=<?= $lanc['tipo'] ?>" class="btn-baixa">Dar Baixa</a>

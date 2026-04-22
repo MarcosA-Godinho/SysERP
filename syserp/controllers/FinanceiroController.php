@@ -50,7 +50,11 @@ class FinanceiroController {
             $this->lancamentoModel->descricao = $_POST['descricao'];
             $this->lancamentoModel->observacao = $_POST['observacao'];
             $this->lancamentoModel->valor = $_POST['valor'];
+            
+            // Recolhemos as duas datas
+            $this->lancamentoModel->data_emissao = $_POST['data_emissao']; 
             $this->lancamentoModel->data_vencimento = $_POST['data_vencimento'];
+            
             $this->lancamentoModel->tipo = $_POST['tipo'];
             $this->lancamentoModel->status = 'Pendente'; // Entra sempre como pendente
 
